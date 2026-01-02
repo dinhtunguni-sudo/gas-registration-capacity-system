@@ -13,118 +13,104 @@ in a real-world educational environment.
 
 ### Registration & Scheduling
 - Google Form → Apps Script → Google Calendar automation
-- Enforces:
-  - Per-student weekly limits
-  - Session-based capacity constraints
-  - Consecutive time-slot validation
-- Automatic email notifications (success / failure)
-- Calendar event creation with reminders and ICS export
+- Enforces configurable business rules (quota, capacity, time window)
+- Automatic email notifications (success / error)
+- Calendar event creation with standardized titles and metadata
 
 ### Capacity & Operations Management
-- Slot-level capacity tracking (60-minute granularity)
-- Real-time remaining-capacity computation
-- Automatic open / close of Google Form based on:
-  - Time window
-  - Remaining capacity
-  - Planned schedules
-- Public read-only schedule synchronization
+- Slot-level capacity tracking
+- Remaining-capacity enforcement before scheduling
+- Centralized control via configuration flags
+- Designed to support both rule-based and data-driven decisions
 
 ---
 
 ## 2. Data Engineering
 
 ### Event & Form Logging
-All submissions are logged into a structured dataset (`MedSim_Log`) containing:
+All submissions are logged into a structured **system log** containing:
 - Timestamp
-- Outcome (SUCCESS / FAIL)
-- Failure reason (if any)
-- Requested date & time slots
-- Merged session duration
-- User metadata (anonymizable)
+- Outcome (SUCCESS / ERROR)
+- Requested date & time slot
+- Submission metadata (anonymizable)
 
-This log serves as the **single source of truth** for analytics and ML.
+This log serves as the **single source of truth** for analytics and
+machine learning.
 
-### Derived Datasets
-- Slot-level remaining capacity snapshots
-- Historical capacity utilization
-- Demand statistics by:
-  - Day of week
-  - Session (morning / afternoon / evening)
-  - Time slot
+### Derived Signals
+From historical logs, the system can derive:
+- Temporal demand patterns (day of week, hour)
+- Success / failure frequency by time slot
+- Capacity pressure indicators
 
 ---
 
 ## 3. Machine Learning (Embedded, Applied)
 
-This system includes a **lightweight machine learning layer**
+This system includes a **lightweight embedded ML layer**
 implemented directly in Google Apps Script (no external libraries).
 
 ### ML Objective
-Predict the probability that a registration attempt will succeed,
-given temporal and duration-based features.
+Estimate the probability of a successful registration attempt
+based on historical operational data.
 
 ### Model
 - Binary Logistic Regression
-- Trained from historical system logs
+- Implemented from scratch using gradient descent
+- Trained offline on historical system logs
 
 ### Features
 - Submission hour
-- Day-of-week (one-hot encoded)
-- Requested session duration (hours)
+- Day-of-week
+- Session duration (configuration-driven)
 
 ### Training & Evaluation
-- Stratified train/test split
 - Gradient descent optimization
-- Evaluation metrics:
-  - AUROC
-  - AUPRC
-  - F1-score (threshold tuned)
-  - Confusion matrix
+- Offline evaluation on historical logs
+- Feature weight inspection for interpretability
 
 ### Outputs
-- Per-request success probability
-- Feature weight inspection
-- Summary metrics for operational review
+- Learned feature weights
+- Success probability estimation (offline, log-based)
+- Summary indicators for operational review
 
-> Note: The goal is **decision support and capacity planning**,
-> not large-scale or deep learning research.
+> Note: The ML component is designed for **decision support and
+> capacity planning**, not for large-scale or deep learning research.
 
 ---
 
-## 4. Capacity Optimization
+## 4. Capacity Optimization Strategy
 
-Two complementary approaches are implemented:
+Two complementary approaches are supported:
 
-1. **Rule-based (Fast)**
-   - Uses historical fail rates and demand frequency
-   - Produces quick capacity suggestions per slot
+1. **Rule-based**
+   - Deterministic constraints (quota, capacity, time windows)
+   - Fast and predictable enforcement
 
 2. **ML-informed**
-   - Uses ML-derived success probabilities
-   - Identifies high-risk time slots
+   - Uses learned patterns from historical logs
+   - Highlights high-risk or high-demand time slots
    - Supports evidence-based capacity adjustment
 
 ---
 
 ## 5. System Design Highlights
 
-- Concurrency-safe (script locks)
-- Idempotent calendar operations
-- Fault-tolerant logging & fallback paths
-- Separation of:
-  - Public configuration
-  - Private organization-specific settings
-- Designed for real ensured usage, not demo-only code
+- Clear separation of concerns (validation, capacity, scheduling, logging)
+- Public-safe configuration with private value injection
+- Fault-tolerant execution (ML never blocks core workflow)
+- Designed for real operational usage, not demo-only scripts
+- Suitable for constrained execution environments (Google Apps Script)
 
 ---
 
 ## 6. Project Scope
 
 This project demonstrates:
-- Applied Machine Learning
-- Data engineering in constrained environments
-- End-to-end automation
+- Applied machine learning in production-like settings
+- Data engineering from operational logs
+- End-to-end automation on Google Workspace
 - Decision-support system design
 
 It is **not** intended as a machine learning research benchmark,
-but as a real-world, data-driven operational system.
+but as a practical, data-driven operational system.
