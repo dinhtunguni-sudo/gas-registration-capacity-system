@@ -68,3 +68,15 @@ const SHEET_ANALYTICS = "Analytics";
    ========================= */
 const ENABLE_EMAIL_NOTIFICATION = true;
 const ENABLE_CALENDAR_CREATION = true;
+/* =========================
+   ML / ANALYTICS
+   ========================= */
+
+// Enable embedded ML analytics (logistic regression, demand analysis)
+const ENABLE_ML_ANALYTICS = true;
+
+// Minimum samples required before training ML models
+const ML_MIN_SAMPLES = 20;
+
+// Lookback window (days) for ML / demand analysis
+const ML_LOOKBACK_DAYS = 120;
