@@ -7,6 +7,7 @@ This project combines **system engineering**, **data processing**, and
 **applied machine learning** to support operational decision-making
 in a real-world educational environment.
 
+This system demonstrates applied capacity planning and decision support concepts, which are also relevant to health system operations
 ---
 
 ## 1. Core Capabilities
